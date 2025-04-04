@@ -6,11 +6,6 @@ TritonHacks happens every year at UCSD, calling high schoolers from all over San
 
 The theme for this Hackathon was nature.
 
-The Team: 
-- [Chris Kim](URL) - Developer
-- [Noah Terrell](URL) - Developer
-- [Victor Hsiao](URL) - Developer
-- [Kevin Shin](https://www.linkedin.com/in/kevin-shin-373183188/) - Lead
 
 # Get Started
 Click on this [link](https://tritonhacks.github.io/thwebdev-24/) to get started.
