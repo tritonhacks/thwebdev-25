@@ -125,5 +125,5 @@ You don\'t have to start from scratch to create your designs! You can take inspi
 One resource is: [Figma\'s Community Website Templates](https://www.figma.com/community/website-templates?editor_type=figma)
 
 [Previous: Getting Started](Getting Started){: .float-left .v-align-text-top}
-[Next: Python](Python){: .float-right .v-align-text-top}
+[Next: HTML, CSS, and Javascript](HTML_CSS_JS){: .float-right .v-align-text-top}
 
