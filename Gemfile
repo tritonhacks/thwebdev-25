@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
 # Core Jekyll dependencies
-gem "jekyll", "~> 4.3"
+gem "jekyll", "~> 4.3.3"
 gem "webrick", "~> 1.8"
 
 # Theme
-gem "just-the-docs"
+gem "just-the-docs", "~> 0.8.1"
 
 # Required dependencies
 gem "jekyll-sass-converter", "~> 3.0"
