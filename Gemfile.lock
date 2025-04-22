@@ -82,8 +82,22 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  addressable (~> 2.8)
+  concurrent-ruby (~> 1.2)
+  ffi (~> 1.16)
+  google-protobuf (~> 3.25)
+  i18n (~> 1.14)
   jekyll (~> 4.3)
-  just-the-docs (~> 0.8.1)
+  jekyll-sass-converter (~> 3.0)
+  just-the-docs
+  mercenary (~> 0.4)
+  public_suffix (~> 5.0)
+  rb-inotify (~> 0.10)
+  rexml (~> 3.2)
+  rouge (~> 4.2)
+  sass-embedded (~> 1.71)
+  terminal-table (~> 3.0)
+  unicode-display_width (~> 2.5)
   webrick (~> 1.8)
 
 BUNDLED WITH
