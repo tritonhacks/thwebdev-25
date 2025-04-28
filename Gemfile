@@ -9,7 +9,7 @@ gem "just-the-docs", "~> 0.8.1"
 
 # Required dependencies
 gem "jekyll-sass-converter", "~> 3.0"
-gem "rouge", "~> 4.2"
+gem "rouge", "~> 4.5"
 gem "terminal-table", "~> 3.0"
 gem "public_suffix", "~> 5.0"
 gem "concurrent-ruby", "~> 1.2"
