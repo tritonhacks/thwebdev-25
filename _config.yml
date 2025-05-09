@@ -16,7 +16,7 @@ aux_links:
 callouts:
   warning:
     title: Warning
-    color: yellow
+    color: orange
   hint:
     title: Hint
     color: grey-lt
