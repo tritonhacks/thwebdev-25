@@ -31,8 +31,6 @@ jobs:
     defaults:
       run:
         working-directory: docs/source
-    container:
-      image: jekyll/jekyll:4.3.3
     steps:
       - name: Checkout
         uses: actions/checkout@v4
