@@ -1,6 +1,6 @@
 # TritonHacks 2024 <br> Web Development Starter Kit
 
-This is the starter kit for the 2023-2024 TritonHacks hosted by [CS Foreach](https://csforeach.ucsd.edu/) during Spring Quarter. 
+This is the starter kit for the 2023-2024 TritonHacks hosted by [CS Foreach](https://csforeach.org/) during Spring Quarter. 
 
 TritonHacks happens every year at UCSD, calling high schoolers from all over San Diego to join a weekend hackathon. Throughout the event, students get starter kits from us to craft cool projects linked to a particular theme. It's a chance for them to dive into coding, solve problems, and spark creativity while having fun together in a collaborative setup.
 
