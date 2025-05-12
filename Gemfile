@@ -5,12 +5,8 @@ gem "jekyll", "~> 4.3.3"
 #gem "webrick", "~> 1.8"
 
 # Theme
-gem "just-the-docs"
+gem "just-the-docs", "0.8.2"
 
-group :jekyll_plugins do
-  gem "just-the-docs"
-  gem "jekyll-deploy"
-end
 # Required dependencies
 #gem "jekyll-sass-converter", "~> 3.0"
 #gem "rouge", "~> 4.2"
