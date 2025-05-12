@@ -2,6 +2,16 @@ title: Web Development Documentation
 description: Web Development Starter Kit for the 2025 Triton Hackathon hosted by CS Foreach @ UCSD.
 theme: just-the-docs
 color_scheme: light
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-deploy
+
+deploy:
+  provider: "github"
+  repository: "tritonhacks/thwebdev-25"
+  branch: "main"
+  token: "..."
 
 url: https://tritonhacks.github.io/thwebdev-25
 

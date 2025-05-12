@@ -1,0 +1,520 @@
+{"0": {
+    "doc": "Creating the Backend",
+    "title": "Creating our Backend",
+    "content": " ",
+    "url": "/Example/Backend#creating-our-backend",
+    
+    "relUrl": "/Example/Backend#creating-our-backend"
+  },"1": {
+    "doc": "Creating the Backend",
+    "title": "Table of contents",
+    "content": ". | Photogallery Backend | Understanding The Code . | Importing Tools We Need | Organization of Files | Creating a Data Model | RESTful Routes | . | . FastAPI . For our Web Development Starter Kit, we’ll be utilizing FastAPI, an essential toolkit for those creating websites and web applications. Consider FastAPI as a collection of foundational tools that developers employ to build and manage the unseen components of websites or apps. These components are crucial for functions like securely transmitting your data during sign-ups or log-ins. While there are other frameworks like Flask, Django, and Tornado, each serving distinct purposes, FastAPI stands out for its ease of use and robust built-in features. This means you can achieve more with less coding effort, making it an excellent choice for both quick website deployment and for those new to web development, thanks to its gentle learning curve. Complete Getting Started before doing this. Photogallery Backend . Create an app.py file at the root level of your project folder. Inside of it, copy these lines of code. from fastapi import FastAPI, Request, HTTPException from fastapi.responses import HTMLResponse, JSONResponse from fastapi.staticfiles import StaticFiles from fastapi.templating import Jinja2Templates from pydantic import BaseModel import uvicorn app = FastAPI() static_files = StaticFiles(directory='public') views = Jinja2Templates(directory=\"public/views\") app.mount('/public', static_files, name='public') app.mount(\"/css\", StaticFiles(directory=\"public/css\"), name=\"css\") app.mount(\"/js\", StaticFiles(directory=\"public/js\"), name=\"js\") class Image(BaseModel): title: str description: str src: str images = {} @app.get('/', response_class=HTMLResponse) def get_home(request: Request) -&gt; HTMLResponse: return views.TemplateResponse(\"main.html\", {\"request\": request, \"images\": images}) @app.post(\"/images\", response_class=JSONResponse) def post_image(img_data: Image): # add data img_id = len(images) + 1 images.update({img_id: img_data}) return {\"img_id\": img_id, **img_data.dict()} @app.put(\"/images/{img_id}\", response_class=JSONResponse) def modify_image(img_id: int, img_data: Image): #modify data if img_id in images: images.update({img_id: img_data}) return images[img_id] raise HTTPException(status_code=404, detail=\"Image not found\") @app.delete('/images/{img_id}', response_class=JSONResponse) def delete_img(img_id: int): if img_id in images: return images.pop(img_id) raise HTTPException(status_code=404, detail=\"Image not found\") if __name__ == \"__main__\": uvicorn.run(\"app:app\", host=\"127.0.0.1\", port=8007, reload=True) . Understanding The Code . Importing Tools We Need . from fastapi import FastAPI, Request, HTTPException from fastapi.responses import HTMLResponse, JSONResponse from fastapi.staticfiles import StaticFiles from fastapi.templating import Jinja2Templates import uvicorn . | FastAPI: This is the main tool for building our web server. | Request: This allows us to see what the user is asking for. For example, if someone wants to view a specific photo, ‘Request’ helps us figure out which photo they want. | HTTPException: Sometimes things go wrong (like if someone asks for a photo that doesn’t exist). This lets us handle such errors by responding with an appropriate error message. | HTMLResponse: When we want to send back a whole webpage. | JSONResponse: When we want to send back just some information, not a full page, in a structured format. JSON is a way of organizing data that’s easy for both humans and - computers to read. | StaticFiles: This is used to manage files that don’t change often, like pictures, stylesheets (CSS files), or JavaScript files. | Jinja2Templates: Helps us dynamically create HTML pages. For example, if you want to show a photo with a title and description, Jinja2 can generate a webpage on the fly using a template. | uvicorn: This is the program that runs our FastAPI app. It’s like the engine that powers our assistant. | . Organization of Files . You have to create these folders at the root of project, which is the folder you opened when creating the project. You can see what your root is by looking at what folder you’re in. In this image, we’re in the Photogallery root. app = FastAPI() static_files = StaticFiles(directory='public') views = Jinja2Templates(directory=\"public/views\") app.mount('/public', static_files, name='public') app.mount(\"/css\", StaticFiles(directory=\"public/css\"), name=\"css\") app.mount(\"/js\", StaticFiles(directory=\"public/js\"), name=\"js\") . | app = FastAPI(): Starts our web server. | StaticFiles: Tells our server where to find static files. We organize files into directories, much like folders on a computer. | Jinja2Templates: Sets up where to find HTML templates for generating web pages. | app.mount(…): This makes these directories available to our server so it can access them when needed. | . Creating a Data Model . class Image(BaseModel): title: str description: str src: str images = {} . | Image: This acts like a form that defines what information a photo needs before it can be added to our album: a title, a description, and a source (src, where the photo is stored). | . We’re going to keep the information contained within Image in a dictionary as defined by images = {} . RESTful Routes . @app.get('/', response_class=HTMLResponse) def get_home(request: Request) -&gt; HTMLResponse: return views.TemplateResponse(\"main.html\", {\"request\": request, \"images\": images}) @app.post(\"/images\", response_class=JSONResponse) def post_image(img_data: Image): # add data img_id = len(images) + 1 images.update({img_id: img_data}) return {\"img_id\": img_id, **img_data.dict()} @app.put(\"/images/{img_id}\", response_class=JSONResponse) def modify_image(img_id: int, img_data: Image): #modify data if img_id in images: images.update({img_id: img_data}) return images[img_id] raise HTTPException(status_code=404, detail=\"Image not found\") @app.delete('/images/{img_id}', response_class=JSONResponse) def delete_img(img_id: int): if img_id in images: return images.pop(img_id) raise HTTPException(status_code=404, detail=\"Image not found\") . | @app.get(‘/’): This tells our web server to listen for requests to the home page (like when someone visits the main URL of our digital album). | response_class=HTMLResponse: We’re saying that our response will be an HTML page. | get_home: This is the function that runs when someone visits the home page. It uses a template to create a webpage that shows all the photos. | @app.post(“/images”): This sets up a way for users to add new photos. ‘Post’ is used when the user is sending us new data (like uploading a photo). | response_class=JSONResponse: Indicates the server will respond with data in JSON format, confirming the photo was added. | @app.put and @app.delete: These are for updating and deleting photos, respectively. ‘Put’ is used for changes, while ‘Delete’ is for removing photos. | {img_id}: This is a placeholder in the URL for the specific photo’s ID. It tells the server which photo to update or delete. | . Previous: Frontend Next: The Team . ",
+    "url": "/Example/Backend#table-of-contents",
+    
+    "relUrl": "/Example/Backend#table-of-contents"
+  },"2": {
+    "doc": "Creating the Backend",
+    "title": "Creating the Backend",
+    "content": " ",
+    "url": "/Example/Backend",
+    
+    "relUrl": "/Example/Backend"
+  },"3": {
+    "doc": "Backend",
+    "title": "What is the Backend?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend#what-is-the-backend",
+    
+    "relUrl": "/Web Development Concepts/Backend#what-is-the-backend"
+  },"4": {
+    "doc": "Backend",
+    "title": "Table of contents",
+    "content": ". | 🏠 Servers - The House’s Functionality | 🪑 Databases - The House’s Resources | 💡 RESTful - Controlling Household Systems | . You’re familiar with the Frontend, which represents what the house looks like – color, walls, and the structure of the house. Now, let’s explore the Backend, which is what makes the house run and function. 🏠 Servers - The House’s Functionality . Imagine servers as your house’s brain. They make everything in your house work, like turning on lights, keeping the rooms cool, and making sure stuff runs smoothly. When you want a light on, the brain (server) sends power to the light so it shines. 🪑 Databases - The House’s Resources . Databases are like different energy companies delivering specific resources to your house. Each company supplies something different, just as databases hold various kinds of organized information. For example, one energy company might provide electricity, another gas, and another water. Similarly, different databases supply specific data types, keeping things organized like resources from different companies. 💡 RESTful - Controlling Household Systems . RESTful is the method we use to interact with the servers. Similar to how you might switch on lights, turn on the faucet for water, or adjust the thermostat to get hot water or change room temperature, RESTful is a way to allows us to access and receive things from the household system. Previous: Javascript Next: Servers . ",
+    "url": "/Web%20Development%20Concepts/Backend#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Backend#table-of-contents"
+  },"5": {
+    "doc": "Backend",
+    "title": "Backend",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend",
+    
+    "relUrl": "/Web Development Concepts/Backend"
+  },"6": {
+    "doc": "Cascading Style Sheets",
+    "title": "What are Cascading Style Sheets (CSS)?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend/CSS#what-are-cascading-style-sheets-css",
+    
+    "relUrl": "/Web Development Concepts/Frontend/CSS#what-are-cascading-style-sheets-css"
+  },"7": {
+    "doc": "Cascading Style Sheets",
+    "title": "Table of contents",
+    "content": ". | Types of Styling . | Inline Styling | Internal Styling | External Styling | . | . CSS, or Cascading Style Sheets, is like the paint and decorations you use to make your LEGO house look awesome after you’ve built it. While HTML defines the structure and content of your web page, CSS controls how your web page looks, like the colors, fonts, sizes, and layout. CSS works together with HTML to make your web page look fantastic. It’s like adding all the cool paint colors, decorations, and designs to your LEGO house after you’ve built it. You use CSS to tell the browser how you want each part of your web page to look. For example, you can use CSS to make your headings big and bold, your paragraphs have a specific font, and your buttons stand out with a bright color. HTML tells the browser what content goes where, and CSS tells the browser how to style and present that content, just like how the instructions tell you where to put each LEGO brick and the decorations to make your house look amazing. Together, HTML and CSS work hand in hand to create beautiful and functional web pages, just like how LEGO bricks and decorations come together to make awesome creations! . ",
+    "url": "/Web%20Development%20Concepts/Frontend/CSS#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Frontend/CSS#table-of-contents"
+  },"8": {
+    "doc": "Cascading Style Sheets",
+    "title": "Types of Styling",
+    "content": "There are different types of CSS styling you can implement: . Inline Styling . Inline styling is when you add CSS styles inside an HTML tag . To do inline styling, you add the style attribute inside an HTML tag, and then the specific CSS property inside the quotes of the style attribute, only do styling within the &lt;body&gt; tag, and inside the opening tag only (not in the closing tag) . &lt;h1 style=\"color:red\"&gt;Hello!&lt;/h1&gt; . This is considered the most inefficient form of implementing CSS styles because if we want to implement multiple CSS properties, it can get pretty jumbled and messy! . Internal Styling . To utilize internal styling, you add the &lt;style&gt; element inside the &lt;head&gt; section . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;style&gt; body {background-color: powderblue;} h1 {color: blue;} p {color: red;} &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;This is a heading&lt;/h1&gt; &lt;p&gt;This is a paragraph.&lt;/p&gt; &lt;/body&gt; &lt;/html&gt; . This separates the CSS from the HTML code and makes it easier to read when multiple styles are implemented for a specific element. However, we want to keep our HTML and CSS code separate from each other, and the best way is to keep the HTML and CSS code in separate files . External Styling . For external CSS styling, we use the &lt;link&gt; tag, which we add to the &lt;head&gt; section in our HTML . &lt;link rel=\"stylesheet\" href=\"(name of css file).css\" /&gt; . We add the rel attribute and specify it as a “stylesheet” to specify that we want to add CSS code to our HTML, and then the href attribute to link our CSS code to the HTML . Overall, CSS can make our website look pretty and stylish. Like with our LEGO house, we can use CSS to make our website stand out in its own unique way! _______________________ . Previous: HTML Next: Javascript . ",
+    "url": "/Web%20Development%20Concepts/Frontend/CSS#types-of-styling",
+    
+    "relUrl": "/Web Development Concepts/Frontend/CSS#types-of-styling"
+  },"9": {
+    "doc": "Cascading Style Sheets",
+    "title": "Cascading Style Sheets",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend/CSS",
+    
+    "relUrl": "/Web Development Concepts/Frontend/CSS"
+  },"10": {
+    "doc": "Databases",
+    "title": "What are Databases?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/Databases#what-are-databases",
+    
+    "relUrl": "/Web Development Concepts/Backend/Databases#what-are-databases"
+  },"11": {
+    "doc": "Databases",
+    "title": "Table of contents",
+    "content": ". | Relational and Non-Relational Databases 🗂 . | Relational Database 📊 | Non-Relational Databases 🌀 | . | . Databases are essential for managing and organizing data in a way that makes it easy to access, manage, and update 🔄. Think about the restaurant analogy 🍽. Before you can enjoy a meal, the kitchen needs all sorts of things like ingredients 🥦, spices 🌶, and cooking tools 🍳. A database holds all the bits and pieces of data 📊 that a computer program needs to work, all organized so it’s easy to find and use, just like how a kitchen organizes everything to cook your food. In our web development case 🌐, a database may store data such as user-specific information 👤. ",
+    "url": "/Web%20Development%20Concepts/Backend/Databases#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Backend/Databases#table-of-contents"
+  },"12": {
+    "doc": "Databases",
+    "title": "Relational and Non-Relational Databases 🗂",
+    "content": "There are several kinds of database, but the only two you need to understand for a introductory to databases are relational and non-relational databases. Relational Database 📊 . Relational databases store data in tables, sort of like grids 📈. Each table is for a different category of information. For example, one table for customer info 🧑‍💼 and another for orders 📝. These tables can link to each other through shared information, like if a customer places an order, there’s a way to see that in both the customer and order tables. They’re great when your data is structured and consistent 🏛. This means you know exactly what information you need to store ahead of time, like names, addresses, or product orders. They’re used a lot in systems that need to keep track of things precisely, such as bank transactions 💰 or school records 🏫. Imagine a well-organized binder with different sections for each subject in school 📚. Each section has pages that follow the same format, making it easy to find and understand information. If you need to see how your math grades relate to your overall GPA, you can easily flip through the binder to find and connect that information 🔍. Non-Relational Databases 🌀 . Non-relational databases, or NoSQL databases, are more flexible in how they store data. They can handle a mix of structured and unstructured data, like text 📝, social media posts 💬, or even videos 🎥. They don’t require a fixed table structure and can easily scale to handle huge amounts of data 📈. These are great for big data applications or services that collect a lot of user-generated content, like social media platforms 📱 or e-commerce sites with customer reviews 🛒. They can quickly adapt to changes in the type of data being stored and can handle massive amounts of data 🌐. Think of a big, expandable folder 📂 that you can throw all sorts of notes into, whether they’re written neatly on lined paper 📄 or quickly jotted on napkins 🍽. You don’t have to organize every piece of information in the same way, and you can keep adding more notes without worrying about running out of space or messing up the order 🔄. Previous: Servers Next: RESTful . ",
+    "url": "/Web%20Development%20Concepts/Backend/Databases#relational-and-non-relational-databases-",
+    
+    "relUrl": "/Web Development Concepts/Backend/Databases#relational-and-non-relational-databases-"
+  },"13": {
+    "doc": "Databases",
+    "title": "Databases",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/Databases",
+    
+    "relUrl": "/Web Development Concepts/Backend/Databases"
+  },"14": {
+    "doc": "Design Process",
+    "title": "Design Process",
+    "content": " ",
+    "url": "/Example/Design%20Process",
+    
+    "relUrl": "/Example/Design Process"
+  },"15": {
+    "doc": "Design Process",
+    "title": "Table of contents",
+    "content": ". | Who’s the Audience? | Tech Stack | Considerations | Simple is better | . ",
+    "url": "/Example/Design%20Process#table-of-contents",
+    
+    "relUrl": "/Example/Design Process#table-of-contents"
+  },"16": {
+    "doc": "Design Process",
+    "title": "Who’s the Audience?",
+    "content": ". | to be filled (highschoolers) ",
+    "url": "/Example/Design%20Process#whos-the-audience",
+    
+    "relUrl": "/Example/Design Process#whos-the-audience"
+  },"17": {
+    "doc": "Design Process",
+    "title": "Tech Stack",
+    "content": "| keep it short and simple ",
+    "url": "/Example/Design%20Process#tech-stack",
+    
+    "relUrl": "/Example/Design Process#tech-stack"
+  },"18": {
+    "doc": "Design Process",
+    "title": "Considerations",
+    "content": "| edge cases, databases, internal storage, etc. ",
+    "url": "/Example/Design%20Process#considerations",
+    
+    "relUrl": "/Example/Design Process#considerations"
+  },"19": {
+    "doc": "Design Process",
+    "title": "Simple is better",
+    "content": "| core features over many features | . Previous: Getting Started Next: Frontend . ",
+    "url": "/Example/Design%20Process#simple-is-better",
+    
+    "relUrl": "/Example/Design Process#simple-is-better"
+  },"20": {
+    "doc": "Design",
+    "title": "Significance of Design",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Design#significance-of-design",
+    
+    "relUrl": "/Web Development Concepts/Design#significance-of-design"
+  },"21": {
+    "doc": "Design",
+    "title": "Table of contents",
+    "content": ". | 🌐 User Experience (UX) - Shaping the House’s Feel | 🎨 User Interaction (UI) - Designing the House’s Controls | 🌍 Diversity, Equity, and Inclusion (DEI) | . Imagine a house that’s basically impossible to live in. The kitchen is on the 2nd floor, bathrooms are on the first floor, and the bedrooms are tucked away in the basement – a total mess! Living there would be a real headache. Imagine having to climb up to the first floor every time you need the restroom, just because your room is in the basement. Plus, all the cooking happens on the 2nd floor. It’s like a daily obstacle course! 😅 . In the web world, bad design is a bit like this crazy house layout – it makes things awkward and inconvenient for everyone. Therefore, the goal of design is to make our home as easy to use and navigate, accessible for everyone, and make it as attractive as possible. 🏠✨ . So when creating our website, we have to consider two main things: . | User Experience | User Interaction | . Let’s find out what they mean! . ",
+    "url": "/Web%20Development%20Concepts/Design#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Design#table-of-contents"
+  },"22": {
+    "doc": "Design",
+    "title": "🌐 User Experience (UX) - Shaping the House’s Feel",
+    "content": "Think of UX as the interior design of your house. It’s about creating a space where everyone feels comfortable and can easily find what they need. In web development, UX is all about putting things on a website in a way that makes it easy and fun to use. It’s like setting up a cool online space, arranging stuff so that using the website feels smooth and enjoyable, just like moving around in a well-designed house. ",
+    "url": "/Web%20Development%20Concepts/Design#-user-experience-ux---shaping-the-houses-feel",
+    
+    "relUrl": "/Web Development Concepts/Design#-user-experience-ux---shaping-the-houses-feel"
+  },"23": {
+    "doc": "Design",
+    "title": "🎨 User Interaction (UI) - Designing the House’s Controls",
+    "content": "UI is all about making the buttons and cool stuff on the website. It’s like creating easy-to-click, good-looking controls, similar to designing a game controller. In web development, UI ensures the website is not just functional but also visually appealing and easy to navigate. UX makes the website feel great, and UI makes it look awesome and easy to play around with. 🖱️💻✨ . ",
+    "url": "/Web%20Development%20Concepts/Design#-user-interaction-ui---designing-the-houses-controls",
+    
+    "relUrl": "/Web Development Concepts/Design#-user-interaction-ui---designing-the-houses-controls"
+  },"24": {
+    "doc": "Design",
+    "title": "🌍 Diversity, Equity, and Inclusion (DEI)",
+    "content": "Imagine you’re at a huge amusement park with friends, but you notice that not everyone can get on the rides. Some of your friends are in wheelchairs 🦽, some can’t see well 👓, and others find the loud noises really overwhelming 🙉. It wouldn’t be fair if only a few of you could enjoy the park while others couldn’t, right? This is where the idea of Diversity, Equity, and Inclusion (DEI) comes into play, but instead of amusement parks, we’re talking about technology and software—like the apps on your phone or websites you visit 📱💻. What Do These Words Mean? 🤔 . | Diversity is about recognizing that everyone is unique, with different abilities, experiences, and needs 🌈. | Equity means making sure everyone has what they need to enjoy the same opportunities and experiences, which might look different for each person ⚖️. | Inclusion is when we create an environment where everyone feels welcome and valued, and can participate fully 🤗. | . Importance of DEI 🌟 . Let’s think about video games as an example. Imagine you have a friend who loves video games but can’t play them because they’re hard to see or hear, or because the controls aren’t easy for them to use. That’s not fair, right? Everyone should have the chance to play and enjoy the game 🎮. In the world of technology, not everyone fits the “average” mold. Some people might have difficulty seeing or hearing, others might have trouble moving their hands or arms, and there are countless other differences. When apps or websites are made only with the “average” person in mind, it leaves out a lot of people who could be enjoying them too. Why should we care? 💡 . Making technology accessible isn’t just the right thing to do—it also makes sense from a business perspective. When more people can use an app or a website, it means more happy users and customers 📈. Think about it this way: if you’re making lemonade to sell at a stand, wouldn’t you want as many people as possible to be able to enjoy it? If some friends couldn’t drink it because the cup was too hard for them to hold, you’d want to find a cup that everyone could hold, right? That’s what DEI in technology is all about—making sure everyone can enjoy what’s being created 🍋🥤. So, next time you use your favorite app or play a game, think about how it was made and whether everyone can enjoy it as much as you do. And remember, in a world where everyone feels included, everyone wins! 🏆🌍 . Previous: Web Development Concepts Next: User Interaction . ",
+    "url": "/Web%20Development%20Concepts/Design#-diversity-equity-and-inclusion-dei",
+    
+    "relUrl": "/Web Development Concepts/Design#-diversity-equity-and-inclusion-dei"
+  },"25": {
+    "doc": "Design",
+    "title": "Design",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Design",
+    
+    "relUrl": "/Web Development Concepts/Design"
+  },"26": {
+    "doc": "An Example",
+    "title": "Photogallery",
+    "content": "For our starter kit, we will be making a photogallery website that uses a server to store images. We’ll outline the design process and go over our front and backend code. The link to the repository is found here . Previous: Python Next: Design Process . ",
+    "url": "/Example#photogallery",
+    
+    "relUrl": "/Example#photogallery"
+  },"27": {
+    "doc": "An Example",
+    "title": "An Example",
+    "content": " ",
+    "url": "/Example",
+    
+    "relUrl": "/Example"
+  },"28": {
+    "doc": "Creating the Frontend",
+    "title": "Creating our Frontend",
+    "content": " ",
+    "url": "/Example/Frontend#creating-our-frontend",
+    
+    "relUrl": "/Example/Frontend#creating-our-frontend"
+  },"29": {
+    "doc": "Creating the Frontend",
+    "title": "Table of contents",
+    "content": ". | Photogallery Frontend . | HTML . | Document Setup | Body | Form for New Images | Displaying the Images | . | CSS . | The Body | Styling for Image Cards | . | Javascript . | Setup | Form Submission | Handling Form Data | Modifying or Deleting Images | Button Clicks | . | . | . ",
+    "url": "/Example/Frontend#table-of-contents",
+    
+    "relUrl": "/Example/Frontend#table-of-contents"
+  },"30": {
+    "doc": "Creating the Frontend",
+    "title": "Photogallery Frontend",
+    "content": "HTML . &lt;!DOCTYPE html&gt; &lt;html lang=\"en\"&gt; &lt;head&gt; &lt;meta charset=\"UTF-8\"&gt; &lt;title&gt;Photogallery&lt;/title&gt; &lt;link rel=\"stylesheet\" href=\"/public/css/main.css\"&gt; &lt;link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"&gt; &lt;link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin&gt; &lt;link href=\"https://fonts.googleapis.com/css2?family=Protest+Revolution&amp;family=Protest+Riot&amp;family=Sedan:ital@0;1&amp;display=swap\" rel=\"stylesheet\"&gt; &lt;script src=\"/public/js/main.js\"&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;div class=\"container\"&gt; &lt;div id=\"createImage\"&gt; &lt;h2&gt;Create a New Image&lt;/h2&gt; &lt;form id=\"createForm\"&gt; &lt;input type=\"text\" id=\"createImgTitle\" placeholder=\"Title\"&gt; &lt;textarea id=\"createImgDescription\" placeholder=\"Description\" rows=\"4\" cols=\"20\"&gt;&lt;/textarea&gt; &lt;input type=\"text\" id=\"createImgSrc\" placeholder=\"Image Source URL\"&gt; &lt;input type=\"submit\" class=\"submit\" value=\"Create Image\"&gt; &lt;/form&gt; &lt;/div&gt; &lt;div id=\"imagesList\"&gt; {% for img_id, img_data in images.items() %} &lt;div class=\"imageForm\"&gt; &lt;figure data-img-id=\"{{ img_id }}\"&gt; &lt;div class=\"pin\"&gt;&lt;/div&gt; &lt;img src=\"{{ img_data.src }}\" alt=\"{{ img_data.title }}\"&gt; &lt;figcaption&gt; &lt;p&gt;{{ img_data.title }}&lt;/p&gt; &lt;p&gt;{{ img_data.description }}&lt;/p&gt; &lt;div class=\"buttons\"&gt; &lt;button type=\"button\" class=\"modifyBtn\"&gt;Modify&lt;/button&gt; &lt;button type=\"button\" class=\"deleteBtn\"&gt;Delete&lt;/button&gt; &lt;/div&gt; &lt;/figcaption&gt; &lt;/figure&gt; &lt;/div&gt; {% endfor %} &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt; . Document Setup . &lt;!DOCTYPE html&gt; &lt;html lang=\"en\"&gt; &lt;head&gt; &lt;meta charset=\"UTF-8\"&gt; &lt;title&gt;Photogallery&lt;/title&gt; &lt;link rel=\"stylesheet\" href=\"/public/css/main.css\"&gt; &lt;link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"&gt; &lt;link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin&gt; &lt;link href=\"https://fonts.googleapis.com/css2?family=Protest+Revolution&amp;family=Protest+Riot&amp;family=Sedan:ital@0;1&amp;display=swap\" rel=\"stylesheet\"&gt; &lt;script src=\"/public/js/main.js\"&gt;&lt;/script&gt; &lt;/head&gt; . | &lt;!DOCTYPE html&gt;: Declares this document as an HTML5 document, which helps the browser to render it correctly. | &lt;html lang=\"en\"&gt;: Opens the HTML document and specifies English as the primary language. | &lt;head&gt;: Contains metadata about the HTML document. | &lt;meta charset=”UTF-8”&gt;: Sets the character encoding to UTF-8, which includes most characters from all known human languages. | &lt;title&gt;Photogallery&lt;/title&gt;: Sets the title of the webpage, which appears in the browser tab. | The first | tag links the main CSS file, which contains styles for your webpage. | The next two | tags establish a connection with Google Fonts, which is used to import custom fonts that are used on the webpage. | The final | imports specific font styles from Google Fonts. | &lt;script&gt;:Includes a JavaScript file that will make parts of the page interactive. This script is placed just before closing the &lt;head&gt; tag so that it’s loaded early before the body content. | . Body . &lt;body&gt; &lt;div class=\"container\"&gt; . | &lt;body&gt;: Contains all the contents of the webpage that will be visible to the user. | &lt;div class=”container”&gt;: A div element used to wrap and style the central part of the webpage. | . Form for New Images . &lt;div id=\"createImage\"&gt; &lt;h2&gt;Create a New Image&lt;/h2&gt; &lt;form id=\"createForm\"&gt; &lt;input type=\"text\" id=\"createImgTitle\" placeholder=\"Title\"&gt; &lt;textarea id=\"createImgDescription\" placeholder=\"Description\" rows=\"4\" cols=\"20\"&gt;&lt;/textarea&gt; &lt;input type=\"text\" id=\"createImgSrc\" placeholder=\"Image Source URL\"&gt; &lt;input type=\"submit\" class=\"submit\" value=\"Create Image\"&gt; &lt;/form&gt; &lt;/div&gt; . | &lt;div id=”createImage”&gt;: A division specifically for the image creation form. | &lt;h2&gt;Create a New Image&lt;/h2&gt;: A heading that describes the purpose of the form. | &lt;form id=”createForm”&gt;: The form where users can input details for creating a new image. | &lt;input type=”text”&gt;: Text fields for entering the title and URL of the image. | &lt;textarea&gt;: A larger text field for entering a description of the image. | &lt;input type=”submit&gt;: A button that submits the form data. | . Displaying the Images . &lt;div id=\"imagesList\"&gt; {% for img_id, img_data in images.items() %} &lt;div class=\"imageForm\"&gt; &lt;figure data-img-id=\"{{ img_id }}\"&gt; &lt;div class=\"pin\"&gt;&lt;/div&gt; &lt;img src=\"{{ img_data.src }}\" alt=\"{{ img_data.title }}\"&gt; &lt;figcaption&gt; &lt;p&gt;{{ img_data.title }}&lt;/p&gt; &lt;p&gt;{{ img_data.description }}&lt;/p&gt; &lt;div class=\"buttons\"&gt; &lt;button type=\"button\" class=\"modifyBtn\"&gt;Modify&lt;/button&gt; &lt;button type=\"button\" class=\"deleteBtn\"&gt;Delete&lt;/button&gt; &lt;/div&gt; &lt;/figcaption&gt; &lt;/figure&gt; &lt;/div&gt; {% endfor %} &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt; . | &lt;div id=”imagesList”&gt;: Contains a dynamically generated list of images. {% for img_id, img_data in images.items() %} : A loop that iterates over each image data item passed from the backend. | &lt;figure&gt;: Semantic HTML5 element used to represent self-contained content, often with an image. | &lt;img&gt;: Displays the image. | &lt;figcaption&gt;: Provides a caption or description for the content of the parent &lt;figure&gt;. | &lt;button&gt;: Buttons for modifying and deleting the image. | . CSS . body { background-image: url('../images/wood-background.jpg'); width: 100%; font-family: 'Sedan', sans-serif; margin: 0; } .container { display: flex; flex-direction: row-reverse; justify-content: center; margin-top: 12.5%; } #imagesList { display: flex; } /* CARD CONTAINER */ figure { position: relative; width: 200px; height: 200px; /* Adjust the height as needed */ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); animation: sway 5s infinite alternate ease-in-out; } figure img { width: 100%; height: 100%; display: block; border: 5px solid white; /* Polaroid frame */ } figcaption { text-align: center; padding: 5px; background-color: white; font-family: Arial, sans-serif; margin-left: 10px; } .pin { position: absolute; width: 20px; height: 20px; background-color: red; margin: 0 50%; border-radius: 50%; animation: none !important; border: 5px solid black; } .imageForm .buttons { display: flex; justify-content: center; gap: 15px; } .buttons &gt; button { padding: 2%; } .buttons &gt; .modifyBtn { background-color: green; } .buttons &gt; .deleteBtn { background-color: red; } @keyframes sway { 0% { transform: rotate(-3deg); } 100% { transform: rotate(3deg); } } /* CREATE CARD */ #createImage { background-color: white; display: flex; flex-direction: column; align-items: center; padding: 0 5%; color: black; } #createImage form { display: flex; flex-direction: column; gap: 15px; align-items: center; width: 50%; padding-bottom: 15%; } #createImgTitle, #createImgDescription, #createImgSrc { padding: 7.5%; } .submit { padding: 10% 25%; border-radius: 15%; background-color: #e2e8f0; } . The Body . body { background-image: url('../images/wood-background.jpg'); width: 100%; font-family: 'Sedan', sans-serif; margin: 0; } . | Sets the background image, font, and other properties for the entire webpage. | . Styling for Image Cards . figure { position: relative; width: 200px; height: 200px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); animation: sway 5s infinite alternate ease-in-out; } . | Styles the &lt;figure&gt; element to look like a card with dimensions, shadows, and a gentle swaying animation. | . Javascript . This part can be a bit confusing, so we’re going to break it down. Don’t get intimidated, we’ll walk you through each step. document.addEventListener(\"DOMContentLoaded\", function() { document.getElementById('createForm').addEventListener('submit', function(e) { e.preventDefault(); const title = document.getElementById('createImgTitle').value; const description = document.getElementById('createImgDescription').value; const src = document.getElementById('createImgSrc').value; server_request('/images', { title, description, src }, 'POST', function(response) { window.location.reload(); }); }); document.getElementById('imagesList').addEventListener('click', function(e) { const figure = e.target.closest('figure'); if (!figure) return; const imgId = figure.getAttribute('data-img-id'); if (e.target.classList.contains('modifyBtn')) { const title = prompt(\"Enter new title:\", figure.querySelector(\"figcaption &gt; p\").textContent); const description = prompt(\"Enter new description:\", figure.querySelectorAll(\"figcaption &gt; p\")[1].textContent); const src = prompt(\"Enter new image source\", figure.querySelector(\"img\").src); server_request(`/images/${imgId}`, { title, description, src }, 'PUT', function(response) { window.location.reload(); }); } else if (e.target.classList.contains('deleteBtn')) { server_request(`/images/${imgId}`, {}, 'DELETE', function(response) { window.location.reload(); }); } }); }); function server_request(url, data={}, verb='GET', callback) { return fetch(url, { credentials: 'same-origin', method: verb, headers: {'Content-Type': 'application/json'}, body: verb !== 'GET' ? JSON.stringify(data) : null, }) .then(response =&gt; response.json()) .then(response =&gt; { if(callback) callback(response); }) .catch(error =&gt; console.error('Error:', error)); } . This code above does several things . | Prevents a form from submitting the traditional way. | Handles adding a new image. | Allows users to modify or delete existing images. | . Setup . document.addEventListener(\"DOMContentLoaded\", function() { ... }); . | This code waits until the entire webpage is loaded (all HTML is displayed, and all images or scripts are loaded). Only then does it start doing anything. Think of it like waiting for everyone to take their seats before starting a show. | . Form Submission . document.getElementById('createForm').addEventListener('submit', function(e) { e.preventDefault(); ... }); . | This part looks for the form on the page where users enter information about a new image (like title, description, and where the image is located). Normally, when you submit a form, the page refreshes. e.preventDefault(); stops the page from refreshing because we want to do things our way without interrupting the user’s experience. | getElementById(‘createForm’): Finds the form on the page. | addEventListener(‘submit’, …): Adds a special listener to the form that activates when the form tries to submit. | e.preventDefault(): Stops the form from submitting in the normal way (prevents the page from reloading). | . Handling Form Data . const title = document.getElementById('createImgTitle').value; const description = document.getElementById('createImgDescription').value; const src = document.getElementById('createImgSrc').value; server_request('/images', { title, description, src }, 'POST', function(response) { window.location.reload(); }); . | After stopping the form from doing its normal thing, we grab the data entered into the form fields (title, description, image source URL) and use it to make a request to our server to save this new image. | getElementById(…): Finds each input field by its ID and gets what the user has typed into .value. | server_request(…): This is a custom function (not shown here) that sends the data to the server. | window.location.reload(): After the server says it’s done, this command refreshes the page so the user can see the new image they added. | . Modifying or Deleting Images . document.getElementById('imagesList').addEventListener('click', function(e) { const figure = e.target.closest('figure'); if (!figure) return; ... }); . | This part handles clicks on either the “Modify” or “Delete” buttons for any image already listed on the page. It checks where the click happened and reacts only if it was on one of these buttons. | getElementById(‘imagesList’): Finds the section of the page that lists all images. | e.target.closest(‘figure’): Finds the closest figure element to where the click happened, which represents the image that the action is to be applied to. | if (!figure) return;: Stops the function if the click wasn’t on an image. | . Button Clicks . if (e.target.classList.contains('modifyBtn')) { ... } else if (e.target.classList.contains('deleteBtn')) { ... } . | If the “Modify” button is clicked, it asks the user to enter new details for the title, description, and source of the image. These new details are then sent to the server to update the image. | If the “Delete” button is clicked, it tells the server to remove the image. No new data needs to be gathered; it just uses the image’s ID to tell the server which image to delete. | . Previous: Design Process Next: Backend . ",
+    "url": "/Example/Frontend#photogallery-frontend",
+    
+    "relUrl": "/Example/Frontend#photogallery-frontend"
+  },"31": {
+    "doc": "Creating the Frontend",
+    "title": "Creating the Frontend",
+    "content": " ",
+    "url": "/Example/Frontend",
+    
+    "relUrl": "/Example/Frontend"
+  },"32": {
+    "doc": "Frontend",
+    "title": "What is the Frontend?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend#what-is-the-frontend",
+    
+    "relUrl": "/Web Development Concepts/Frontend#what-is-the-frontend"
+  },"33": {
+    "doc": "Frontend",
+    "title": "Table of contents",
+    "content": ". | HTML - The Skeleton of Your Website 👷 🧱 | CSS - What Makes Your Website Look Pretty 🌈 ✨ | JavaScript - Bring Your Website to Life 🪄 | . Okay, imagine your favorite LEGO action figure as a cool website or app. The way it looks and feels when you play with it is like the front end. Now, let’s break it down into three main components: . Now, what is each of these components for, and what role does each component play in front end development? . HTML - The Skeleton of Your Website 👷 🧱 . HTML, or Hyper Text Markup Language, acts as the skeleton for your website. Like a blueprint for a LEGO figure, it instructs on assembly and identifies each part. Just as you’d follow instructions to place the head, body, arms, and legs, HTML guides website construction. It ensures everything aligns perfectly to create the desired look and functionality! . CSS - What Makes Your Website Look Pretty 🌈 ✨ . CSS, or Cascading Style Sheets, is the paint and accessories for your website. In the case of a LEGO figure, after assembling the figure with HTML, CSS lets you unleash your creativity to make it stand out among the millions of other LEGO figures out there. Picture decking out your LEGO figure in a vibrant superhero costume, a sleek robot shell, or a dazzling princess gown! CSS brings these visions to life on your website. It’s the style guru that adds colors, patterns, and flair to make your creation truly stand out! . JavaScript - Bring Your Website to Life 🪄 . JavaScript acts as the superpowers for your LEGO figure. After building it with HTML and giving it style with CSS, JavaScript steps in to add movement and magic. Envision your LEGO figure performing flips, karate kicks, or dancing — it’s all made possible by JavaScript. So, when you click a button and see something awesome happen on a website, like a game starting or a video playing, that’s JavaScript using its magical abilities to breathe life into your creation! . Previous: User Experience Next: HTML . ",
+    "url": "/Web%20Development%20Concepts/Frontend#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Frontend#table-of-contents"
+  },"34": {
+    "doc": "Frontend",
+    "title": "Frontend",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend",
+    
+    "relUrl": "/Web Development Concepts/Frontend"
+  },"35": {
+    "doc": "Getting Started",
+    "title": "Getting Started",
+    "content": " ",
+    "url": "/Tutorials/Getting%20Started",
+    
+    "relUrl": "/Tutorials/Getting Started"
+  },"36": {
+    "doc": "Getting Started",
+    "title": "Table of contents",
+    "content": ". | Setting up Python in Visual Studio Code | Dependencies | Liveshare Feature (Extra) | . This documentation is only for Windows. ",
+    "url": "/Tutorials/Getting%20Started#table-of-contents",
+    
+    "relUrl": "/Tutorials/Getting Started#table-of-contents"
+  },"37": {
+    "doc": "Getting Started",
+    "title": "Setting up Python in Visual Studio Code",
+    "content": "If your computer doesn’t have Visual Studio Code, install it and follow these steps. In the installation process of Visual Studio Code, don’t change anything and press next until it is installed. Once it is installed, it will look like this. Head over to the Python Website and download the latest version. Once you get this pop up, make sure to check the second box of Add python.exe to PATH . After you’ve installed Python, you have to set your interpreter so that it uses the installed Python. To do so, press CTRL + SHIFT + P inside of your visual studio code and type Python: Select Interpreter and press enter. You should see an option to select the interpreter you just installed. Don’t worry about the other options, you should only see one. You’ve just finished setting up your environment! . ",
+    "url": "/Tutorials/Getting%20Started#setting-up-python-in-visual-studio-code",
+    
+    "relUrl": "/Tutorials/Getting Started#setting-up-python-in-visual-studio-code"
+  },"38": {
+    "doc": "Getting Started",
+    "title": "Dependencies",
+    "content": "You won’t be able to install any of these dependencies if you do not have your Python set up. In order to access the framework we’ll be using, you must install the libraries first. To do so, go into your Visual Studio Code and make sure that your interpreter is set as the one you just installed. Press Ctrl + Shift + P and type in Terminal: Create New Terminal. Inside of this terminal, type these two commands separately. pip install fastapi . pip install uvicorn . Once these are installed, you are all set up to start creating your website. ",
+    "url": "/Tutorials/Getting%20Started#dependencies",
+    
+    "relUrl": "/Tutorials/Getting Started#dependencies"
+  },"39": {
+    "doc": "Getting Started",
+    "title": "Liveshare Feature (Extra)",
+    "content": "There is an extension on visual studio code that allows you to code in real-time with your team members. In order to do so, follow this tutorial. Previous: Tutorials Next: HTML, CS, Javascript . ",
+    "url": "/Tutorials/Getting%20Started#liveshare-feature-extra",
+    
+    "relUrl": "/Tutorials/Getting Started#liveshare-feature-extra"
+  },"40": {
+    "doc": "Hypertext Markup Language",
+    "title": "What is Hypertext Markup Language (HTML)?",
+    "content": "HTML serves as the building blocks for our website. It represents the different pieces for your LEGO figure, the head, arms, body, legs. Every HTML page ends with “.html”, where each page has the same starting structure. The &lt;head&gt; contains all of the “metadata” which are information related to the website. The actual content goes inside of the &lt;body&gt;tags. &lt;!doctype html&gt; &lt;html lang=\"en-US\"&gt; &lt;head&gt; &lt;meta charset=\"utf-8\" /&gt; &lt;meta name=\"viewport\" content=\"width=device-width\" /&gt; &lt;title&gt;My page title&lt;/title&gt; &lt;link rel=\"stylesheet\" href=\"style.css\" /&gt; &lt;/head&gt; &lt;body&gt;&lt;/body&gt; &lt;!--The actual content goes inside the &lt;body&gt; tags--&gt; &lt;/html&gt; . Most HTML tags are structured like this: . One important aspect of HTML is the DOM . The DOM, or Document Object Model, is like the instruction manual that tells you how to put all those LEGO bricks together to build your house. The web browser is like a really smart LEGO builder. When you open a web page, the browser starts reading through that instruction manual, the HTML code. The DOM is like a map of your web page, showing how all these HTML elements are connected and organized. It’s a way for your web browser to understand the structure of your page so it knows how to display it properly. It’s like a blueprint of the web page, showing how all the HTML elements are connected and organized, just like how the instruction manual tells the builder how to connect all the LEGO bricks to build the house. Just like how following the LEGO instruction manual helps you build your house correctly, the DOM helps the web browser render your web page correctly, making sure everything shows up in the right place and looks the way it should. The browser knows exactly where everything is on the page because it’s already built that LEGO-like map in its memory using the DOM. This helps the browser quickly find and update different parts of the web page without getting confused, just like how a LEGO builder can quickly find and add or remove bricks from the right spots in the house they’re building! . To learn more about HTML, down below are some resources: . HTML on W3Schools Mozilla HTML Documentation . Previous: Frontend Next: CSS . ",
+    "url": "/Web%20Development%20Concepts/Frontend/HTML#what-is-hypertext-markup-language-html",
+    
+    "relUrl": "/Web Development Concepts/Frontend/HTML#what-is-hypertext-markup-language-html"
+  },"41": {
+    "doc": "Hypertext Markup Language",
+    "title": "Hypertext Markup Language",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend/HTML",
+    
+    "relUrl": "/Web Development Concepts/Frontend/HTML"
+  },"42": {
+    "doc": "HTML, CSS, and Javascript",
+    "title": "Table of contents",
+    "content": ". | HTML . | The &lt;head&gt; tag | The header tags | The &lt;p&gt; tag | The &lt;a&gt; tag | The list tags | Ordered Lists | Unordered Lists | The &lt;img&gt; tag | . | CSS . | Element Selectors | ID Selectors | Class Selectors | Basic Style Attributes | . | JavaScript . | Variables and Data Types | Operators | Functions | Event Handling | DOM Manipulation | . | . HTML . If we imagine the web as a house, HTML lays the foundation and blueprint of the house. Essentially its just text It consists of “tags” enclosed in angle brackets, like &lt;tag&gt;. Tags define structure and content. There are so many different types of tags, from defining lines and headings, links, forms, images and videos down to a simple text as the ones you are reading right now. These tags create a layout of the webpage. | Basic Structure: An HTML document consists of elements enclosed in tags. Key elements include &lt;html&gt;, &lt;head&gt;, and &lt;body&gt;. | Content Elements: HTML offers various elements for content like headings (&lt;h1&gt; to &lt;h6&gt;), paragraphs (&lt;p&gt;), lists (&lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;), links (&lt;a&gt;), images (&lt;img&gt;), and more. | Semantic HTML: Semantic HTML elements convey meaning, aiding accessibility and SEO. | . The &lt;head&gt; tag . The head tag represents the set up for our HTML page . The two main components included in every &lt;head&gt; tag are the &lt;title&gt; and &lt;link&gt; tags . We use the &lt;title&gt; tag when we include a title for our webpage . We use the &lt;link&gt; tag for when we want to link a CSS stylesheet to our page, from the example above, we link the “style.css” stylesheet to our HTML page . We will outline the multiple components that every HTML website has: . The header tags . Header tags represent the titles of our HTML . There are 6 different types of header tags: h1, h2, h3, h4, h5, and h6 . To use a header tag, you would do: . &lt;h + \"number\"&gt;(content here)&lt;/h + \"number\"&gt; (where number is from 1 to 6) . The &lt;p&gt; tag . The &lt;p&gt; tag is used for big blocks of text, or paragraphs. We use it when we want to include big blocks of text on our website, like for a blog or article . &lt;p&gt;(insert some text here)&lt;/p&gt; . The &lt;a&gt; tag . The &lt;a&gt; tag is a tag is used to link other webpages or websites. To use an &lt;a&gt; tag, you have to specify the href attribute, which is the url that the tag links to. &lt;a href=\"some url\"&gt;(content here)&lt;/a&gt; . In between the opening and closing &lt;a&gt; tags, you insert some text that serves as the link. The default blue color text with the underline shows that the text is a link. The list tags . There are two types of lists in HTML: . | ordered lists | unordered lists | . Ordered Lists . To specify an unordered lists, you use the &lt;ol&gt; tag. With ordered lists, your list items would be in a certain order, going from 1, 2, 3, 4, and so forth . Same as ordered lists, to add items to your unordered list you use the &lt;li&gt; tag. Unordered Lists . To specify an unordered lists, you use the &lt;ul&gt; tag. Same as ordered lists, to add items to your unordered list you use the &lt;li&gt; tag. Instead of ordered numbers, there would be a bullet point or some form of separator at the front of each list item . Unordered lists would look like this: . The &lt;img&gt; tag . The &lt;img&gt; tag is used to add images to our website. Unlike the other tags, the image tag does not have a self-closing tag, so instead of ending with &lt;/img&gt; we just end with /&gt; . &lt;img src=\"image link\" alt=\"describe image here\" /&gt; . For more HTML tags, visit the link below: . More HTML Tags . CSS . Every house has an architecture style, or a color scheme. All the rooms would follow that scheme according to the what the house should look like. Wouldn’t it be nice to define that in once place? If we have the scheme defined in some place, all the pages we create with HTML would have that style without specifying them repeteadly. This is where CSS comes in. It adds colors, fonts, spacing and styles of the elements used in HTML. | Selectors: CSS selectors target HTML elements for styling. They can be simple (like element selectors), class-based (using .class), or ID-based (using #id). | Box Model: CSS box model comprises content, padding, border, and margin, influencing element layout. | Styling Properties: CSS properties like color, font-size, background, margin, and padding offer control over appearance. | Selectors Specificity: Specificity determines which styles apply when multiple rules target the same element. | . When we want to add CSS styling to any of our HTML elements, to select the specific HTML elements we want to style, there are a few different type of CSS selectors we can use . Element Selectors . Element selectors are the most basic type of CSS selector. To use an element selector, we just get the tag that we want to apply our CSS to . Say we want to style the tag below . &lt;h1&gt;Hello World!&lt;/h1&gt; . To use an element selector, we just get the tag h1 and apply our CSS styles! . h1 { (insert styles here) } . ID Selectors . You would use id selectors if you only want to apply CSS styling to one HTML element . To use an id selector, in your HTML, you use the id attribute . &lt;h1 id=\"any_id\"&gt;Hello World!&lt;/h1&gt; . And in your CSS, you would use the # tag to select the element with a certain id . #any_id { (insert styles here) } . Only one element can have a certain id, you cannot have two elements with the same id . Class Selectors . Class selectors allow you to apply the same style attributes to multiple elements . In your HTML, you would assign the class attribute to the tags you want to have the same style . From the below example, we see that there are multiple &lt;p&gt; tags . Say we want to style the first two &lt;p&gt; tags and not the third one. We can assign them the same class, in this case, “paragraph” . &lt;h1&gt;Hello, my name is Deadpool!&lt;/h1&gt; &lt;p class=\"paragraph\"&gt;I am an antihero, I have done good but have also done bad&lt;/p&gt; &lt;p class=\"paragraph\"&gt;I am played by Ryan Reynolds!&lt;/p&gt; &lt;p&gt;The end!&lt;/p&gt; . To add style attributes to a class, we use the . tag instead .paragraph { (insert styles here) } . Basic Style Attributes . There are many different types of style attributes, but we’ll lay out some basic ones. When writing any CSS code, you have to write it like this: . The ones below are style attributes you would use for text . font-size: changes the size of the text (font size is based on pixels, or px) . font-size: 16px; . color: changes the color of the text . color: blue; . font-family: give a specific font to selected text, there are many different font styles out there (the default is sans-serif) . font-family: sans-serif; . text-align: controls how text is aligned on a page, can be aligned left, right, or center . text-align: center; . For a full list of CSS properties, visit the link below: . All CSS properties . JavaScript . Now that we’ve created a structure and style, we would want functionality and interaction. If we turn on the switch, what parts of the rooms will light up? Do you want your house to have automatic temperature adjusting to which part of the room you are in? JavaScript is the “code” of the webpage that defines and adds that functionality and behavior. It responds to the inputs and actions user gives, and creates outputs. | Basic Syntax: JavaScript syntax includes variables, data types, operators, functions, and control structures like if statements and loops. | DOM Manipulation: JavaScript interacts with the DOM (Document Object Model), enabling dynamic content updates and element manipulation. | Event Handling: JavaScript responds to user interactions like clicks and keystrokes, triggering actions or behavior changes. | Asynchronous Operations: JavaScript handles asynchronous tasks like fetching data from servers or APIs using promises or async/await. | . Variables and Data Types . JavaScript allows you to store and manipulate data in variables. It supports several data types including strings, numbers, booleans, objects, and arrays. var name = \"Anthony\"; // String var age = 30; // Number var isDeveloper = true; // Boolean . Operators . | Type | Operators | Description | . | Arithmetic | +, -, *, / | Used to perform basic mathematical operations such as addition, subtraction, multiplication, and division. | . | Logical | &amp;&amp;, ||, ! | Used to perform logical operations. &amp;&amp; is logical AND, || is logical OR, and ! is logical NOT. | . | Comparison | ==, !=, ===, !== | Used to compare two values. == and != check for equality and inequality without type coercion, whereas === and !== check for equality and inequality with type coercion. | . Functions . Functions are reusable blocks of code that perform a specific task. They can be called as needed, accept parameters, and return results. function greet(name) { return \"Hello, \" + name + \"!\"; } console.log(greet(\"Anthony\")); // Outputs: Hello, Anthony! . Event Handling . You can make things happen when buttons are clicked: . &lt;button id=\"clickMe\"&gt;Click me!&lt;/button&gt; &lt;script&gt; document.getElementById('clickMe').addEventListener('click', function() { alert('Thanks for clicking!'); }); &lt;/script&gt; . DOM Manipulation . You can modify the content without needing to reload the page. document.getElementById('welcome').textContent = 'Welcome to our website!'; . Previous: Getting Started Next: Python . ",
+    "url": "/Tutorials/HTML_CSS_JS#table-of-contents",
+    
+    "relUrl": "/Tutorials/HTML_CSS_JS#table-of-contents"
+  },"43": {
+    "doc": "HTML, CSS, and Javascript",
+    "title": "HTML, CSS, and Javascript",
+    "content": " ",
+    "url": "/Tutorials/HTML_CSS_JS",
+    
+    "relUrl": "/Tutorials/HTML_CSS_JS"
+  },"44": {
+    "doc": "Javascript",
+    "title": "What is Javascript (JS)?",
+    "content": "JavaScript is a programming language that works hand in hand with HTML and CSS, forming the backbone of most websites you visit. Think of HTML as the basic structure of your LEGO set, CSS as the colors and styles you apply to your LEGO pieces, and JavaScript as the motor that powers your moving LEGO constructions. ",
+    "url": "/Web%20Development%20Concepts/Frontend/Javascript#what-is-javascript-js",
+    
+    "relUrl": "/Web Development Concepts/Frontend/Javascript#what-is-javascript-js"
+  },"45": {
+    "doc": "Javascript",
+    "title": "Unleashing the Power of JavaScript",
+    "content": "To add JavaScript to your website, you would want to use the &lt;script&gt; tag . You could place the &lt;script&gt; tag either in the &lt;head&gt; tag or in the &lt;body&gt; tag. We add it to the body tag for this example. To add internal JavaScript to your website, you would insert the JS code directly, as shown below: . &lt;!DOCTYPE html&gt; &lt;html lang=\"en-US\"&gt; &lt;head&gt; &lt;meta charset=\"UTF-8\"&gt; &lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"&gt; &lt;title&gt;Today's Date&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;script&gt; let d = new Date(); document.body.innerHTML = \"&lt;h1&gt;Today's date is \" + d + \"&lt;/h1&gt;\" &lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . However, like with our CSS, we would want to keep our JavaScript separate from our HTML, so best practice is to use external JavaScript, or store it in a separate file. To add external JavaScript to your website, or have it in a separate file you would have: . &lt;script src=\"myscript.js\"&gt;&lt;/script&gt; . You would create a JavaScript file using the extension .js, and would ideally want to store it in a separate folder from the HTML. The &lt;script&gt; tag would be the last tag in the &lt;body&gt; section, as shown in the example block of code down below . &lt;!DOCTYPE html&gt; &lt;html lang=\"en-US\"&gt; &lt;head&gt; &lt;meta charset=\"UTF-8\"&gt; &lt;meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"&gt; &lt;title&gt;Today's Date&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;script src=\"path/to/my/script.js\"&gt;&lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . This will connect our JavaScript to our HTML and CSS, giving us the power to create a fully dynamic website! . Previous: CSS Next: Backend . ",
+    "url": "/Web%20Development%20Concepts/Frontend/Javascript#unleashing-the-power-of-javascript",
+    
+    "relUrl": "/Web Development Concepts/Frontend/Javascript#unleashing-the-power-of-javascript"
+  },"46": {
+    "doc": "Javascript",
+    "title": "Javascript",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Frontend/Javascript",
+    
+    "relUrl": "/Web Development Concepts/Frontend/Javascript"
+  },"47": {
+    "doc": "Python",
+    "title": "Python Introduction",
+    "content": " ",
+    "url": "/Tutorials/Python#python-introduction",
+    
+    "relUrl": "/Tutorials/Python#python-introduction"
+  },"48": {
+    "doc": "Python",
+    "title": "Table of contents",
+    "content": ". | Python . | Print Statements | Variables and Data Types | Operators . | Mathematical Operators | Comparison Operators | Logical Opersators | Identity And Membership Operators | . | if and else Statements | Else If Statements | Lists | Loops | Functions | . | . Python . Python is a popular high-level programming language that is used in various fields such as web development, data science, and software engineering. Python is known for its readability, simplicity, and versatility. Print Statements . In python and like many programming languages, they have print statements. These are what you can use to make the program display an output to the computer screen when you are programming. Here’s an example of a print statement that displays the words “Hello World”: . print(\"Hello World\") . When you run the program this is the output: . Hello World . Comments . In python there are these things called comments. Comments are like notes or reminders that we write in our code to help us understand it better. For example in python we can use a comment like this: . # This is a comment . Here is another example of a comment being used. # This code prints the words \"Hello World\" print(\"Hello World\") . Output: . Hello World . As we can see comments dont effect the code in any way and they are just there for you as the programmer to see. Variables and Data Types . Variables in Python are like containers that hold information. Imagine a box with a label on it. You can put different things in the box, and the label helps you remember what’s inside. Similarly, a variable has a name (like the label) and can store different types of information, such as numbers, words, or true/false values. For example, let’s say we have a variable called ‘age’ to store someone’s age: . age = 15 . Here, ‘age’ is the variable name, and ‘15’ is the value stored in the variable. Later, if the person’s age changes, we can update the variable: . age = 16 . Now, ‘age’ holds the value ‘16’. Variables allow us to store and manipulate data in our programs, making them flexible and powerful.” . We can also use print statements to display the information that is stored in variables. Now lets see an example. Here we have a variable called “message” that stores the text “Hi how are you?”, and a print statement with the variable “message” inside of it. message = \"Hi how are you?\" print(message) . When we run the program this is what gets outputted: . Hi how are you? . In python data types are essentially different kinds of containers that store different types of information. Just like in real life, where we have different types of containers for storing different things (like a box for toys, a jar for cookies, and a bottle for water), Python has different data types for storing different kinds of information. You can use these data types for storing different types of data in variables. Here are some common data types in python: . String (str): Strings are used for storing text, like ‘hello’ or ‘Python is fun!’. Integer (int): This data type is for storing whole numbers, like 5, 10, or -3. Float (float): Floats are used for storing decimal numbers, like 3.14 or -0.5. Boolean (bool): Booleans can only have two values: True or False. They’re often used for making decisions in our programs, like ‘Is it raining? (True/False)’. List: Lists are used for storing collections of items. For example, a list of numbers [1, 2, 3] or a list of names [‘Alice’, ‘Bob’, ‘Charlie’]. Here are some examples of these different data types. This is a variable named “message” that contains a String (str) data type. message = \"Hello World\" . This is a variable named number that contains an Integer (int) data type. number = 10 . This is a variable named “decimal_number” that contains a FLoat (float) data type. decimal_number = 15.5 . This is a variable named “currently_learning” that contains a Boolean (bool) data type. currently_learning = True . This is a list variable named “number_list” that is a list data type that contains a list of Integers. Lists can also contain Strings. number_list = [1, 2, 3] . In python we can also store a variable inside of a variable and give them new values. Here we have the variable age that holds the value of 15. We also have the variable called new_age that holds the value of 16. age = 15 new_age = 16 print(age) age = new_age print(age) . When the first print statement gets ran, the number 15 gets printed but when the second print statement runs, the number 16 gets printed. This is because when we did age = new_age, we are giving the age variable a new value which is the value of new age. Output: . 15 16 . Operators . Mathematical Operators . In Python there are arithmetic operators that are used to perform basic mathematical operations like addition, subtraction, multiplication, and division. | Operator | Description | Syntax | . | + | Addition: adds two operands | x + y | . | - | Subtraction: subtracts two operands | x - y | . | * | Multiplication: multiplies two operands | x * y | . | / | Division: divides the first operand by the second | x / y | . Here are some examples of how to use these operators: . print(5 + 5) print(5 - 1) print(5 * 5) print(10 / 2) . When we run the program all of these print statements get called and the answers to these mathematical operations get printed (outputted). 10 4 25 5.0 . We can also use variables that hold values to perform these mathematical operations. number_five = 5 number_two = 2 number_one = 1 number_ten = 10 print(number_five + number_five) print(number_five - number_one) print(number_five * number_five) print(number_ten / number_two) . Here is the output: . 10 4 25 5.0 . Aditionally we can use expressions which are like sentences in math that help us do calculations and solve problems. Here are some examples. x = 20 y = 10 add = x + y subtract = x - y multiply = x * y divide = x / y print(add) print(sub) print(pro) print(div) . Here is what the output of this code would look like: . 30 10 200 2 . In Python we can also add Strings together. This is called concatenation. Concatenation in Python is like combining pieces of text or data together to create a single, larger piece. It’s like putting together pieces of a puzzle to make a bigger picture, or joining words to form a sentence. Here is an example: . word_1 = \"Hello\" word_2 = \"World\" print(word1 + \" \" + word2) . Output: . Hello World . Concatenation is not limited to strings. We can also concatenate things like lists. For example: . list1 = [1, 2, 3] list2 = [4, 5, 6] combined_list = list1 + list2 print(combined_list) . Output: . [1, 2, 3, 4, 5, 6] . Comparison Operators . In Python Comparison operators compare values. It either returns True or False according to the condition. | Operator | Description | Syntax | . | &gt; | Greater than: True if the left operand is greater than the right | x &gt; y | . | &lt; | Less than: True if the left operand is less than the right | x &lt; y | . | == | Equal to: True if both operands are equal | x == y | . | != | Not equal to: True if operands are not equal | x != y | . | &gt;= | Greater than or equal to: True if the left operand is greater than or equal to the right | x &gt;= y | . | &lt;= | Less than or equal to: True if the left operand is less than or equal to the right | x &lt;= y | . Here are some examples of them being used: . a = 15 b = 5 print(a &gt; b) # since a is greater than b, the print statement returns True print(a &lt; b) # since a is less than b, the print statement returns False print(a == b) # since a is not equal to b, the print statement returns False print(a != b) # since a is not equal to b, the print statement returns True print(a &gt;= b) # since a is either greater than or equal to b, the print statement returns True print(a &lt;= b) # since a is either not less than or equal to b, the print statement returns False . Here is the output of this code: . True False False True True False . Logical Opersators . Logical operators in Python are like tools we use to make decisions in our programs. Just like how you might use the words ‘and’, ‘or’, and ‘not’ to combine ideas or conditions when you’re making a decision in real life, logical operators in Python help us combine conditions and make decisions in our code. | Operator | Description | Syntax | . | and | Logical AND: True if both the operands are true | x and y | . | or | Logical OR: True if either of the operands is true | x or y | . | not | Logical NOT: True if the operand is false | not x | . Here are some examples on how to use them. a = True b = False print(a and b) # returns False because b is False. If they were both True then it would return True. print(a or b) # returns True because at least one of them is True which in this case is a. print(not a) # returns False because a is True. print(not b) # returns True because b is False. Output: . False True False True . Identity And Membership Operators . Identity operators in Python are like tools we use to check if two things are the same or different. Just like how you might compare two things in real life to see if they are identical or not. | Operator | Description | Syntax | . | is | True if the operands are identical | x is y | . | is not | True if the operands are not identical | x is not y | . Here are some examples for how we can use them. a = 10 b = 20 print(a is b) # returns False because this is checking if a and b are the same but they are not. print(a is not b) # returns True because this is checking if a is not equal to b which is True. Output: . False True . Membership operators in Python are like tools we use to check if something is part of a group or sequence. It’s like looking for a specific item in a collection, such as finding a book in a library or checking if your name is on a list. | Operator | Description | Syntax | . | in | True if value is found in the sequence | x in y | . | not in | True if value is not found in the sequence | x not in y | . Here are some examples: . In this example we have a list of numbers and we are printing True if 6 is in the list and False if it is not. numbers = [1, 2, 3, 4, 5] print(6 in numbers) . Output: . False . Since 6 was not in the list, this statement prints False. In this next example we have a list of numbers and we are printing True if 9 is not in the list and True if it is. numbers = [1, 2, 3, 4, 5] print(9 not in numbers) . Output: . True . Since 9 was not in the list, this statement prints True. Aditionally we can also use this for Strings. sentence = \"hello how are you\" print(\"how\" in sentence) . Output: . True . This prints True because the text “how” is found inside of the text “hello how are you”. if and else Statements . If statements in Python are like decision-making tools that help our programs make choices based on certain conditions. It is used to decide whether certain code will be executed or not. Here is an example of the format of using an if statement. if condition: # code to execute if the condition is true . Here is an example of an if statement with code to check if a number is positive. number = 5 if number &gt; 0: print(\"The number \" + str(number) + \" is positive) . Output: . The number 5 is positive . What happend was that since the number 5 was greater than zero, it printed “The number 5 is positive” and if it wasnt then nothing would be printed since the condition would be false in that situation. We also used type conversion str(number) because we cannot add an integer and a string together so we had to convert the integer of 5 into a string so there wouldn’t be an error. Else Statements . In Python Else statements are like a backup plan that gets executed when the conditions specified in the if statement are not met. For example lets say that we have this code that checks if a person is an adult. age = 19 if age &gt;= 18: print(\"Your age is 18 or greater so you are an adult\") . Output . Your age 18 or greater so you are an adult . This code works but it is not really useful because if the user is under 18 then nothing will happen and there will be no output. Here is how we can fix this with else statements: . age = 16 if age &gt;= 18: print(\"Your age is 18 or greater so you are an adult\") else: print(\"Your age is under 18 so you are not an adult\") . Output . Your age is under 18 so you are not an adult . Else If Statements . In Python there are also else if or elif statements that act similar to else statements but you use them when you want to check another condition. Here is an example of using elif statements to see what type of grade you have: . grade = 87 if grade &gt;= 90: print(\"You have an A\") elif grade &gt;= 80: print(\"You have a B\") elif grade &gt;= 70: print(\"You have a C\") else: print(\"You have an F\") . Output . You have a B . Lists . In Python lists are a data structure that we use to store multiple items is a singular variable. They can also contain elements of different data types. Lists can easily be modiefied and its data can easily be accessed. Here is how you can create a list with 5 integer elements ranging from 1 to 5: . my_list = [1,2,3,4,5] . Here is an example of a list of strings: . my_list = [\"apple\", \"orange\", \"banana\"] . Accessing Elements . In programming languages they use what’s called zero indexing where essentially the first index of a data structure like lists or strings starts at zero. So in this example to access the first element of the list we would do this: . my_list = [\"apple\", \"orange\", \"banana\"] print(my_list[0]) . Output: . apple . Modifying Elements . Here’s how we can modify the list: . my_list = [\"apple\", \"orange\", \"banana\"] my_list[1] = \"pear\" print(my_list) . Output: . apple, pear, banana . Adding Elements . For adding elements to the list we can use a list method which is a built in method that we csan use on lists. To add elements we can use the .append() method. Here’s an example: . my_list = [\"apple\", \"orange\", \"banana\"] my_list.append(\"cherry\") print(my_list) . Output: . apple, orange, banana, cherry . Removing Elements . For removing elements we can use the .remove() method. Example: . my_list = [\"apple\", \"orange\", \"banana\"] my_list.remove(2) print(my_list) . Output: . apple, orange . List Length . We can access the length of a list by using the len method which looks like this len(). The len method can also be used for other data structures and types like strings. Here is how we can use it with iterating over a list: . my_list = [\"apple\", \"orange\", \"banana\"] print(len(my_list)) . Output: . 3 . Loops . We can use loops for when we want to execute code repeatedly until a specific condition is met. In Python there are two main loops which are the for and while loops. The while loop is used when you want to ececute code until a specific condition is true and the for loop is when you know how many times you want the code to execute. For loop . We can use for loops to iterate over a list or a range of numbers. Here is an example of using a for loop for iterating over a list: . my_list = [\"apple\", \"orange\", \"banana\"] for item in my_list: print(my_list[item]) . Output: . apple orange banana . This is how we would use it with a range of numbers: . for x in range(5) print(x) . Output: . 0 1 2 3 4 . While Loop . We use while loops when we want to execute code until a condition is met then once the condition is met then the loop stops. For example her is how we can print numbers from 1 to 5: . number = 0 while number &lt; 5: number +=1 print(number) . Output: . 1 2 3 4 5 . Functions . In Python we can use funnctions which is a block of organized, reusable code that performs a specific task. Functions provide a way to modularize your code, making it easier to read, write, and maintain. In Python, you define a function using the def keyword followed by the function name, parentheses ( ) containing optional parameters, and a colon :. The body of the function is indented and contains the code to be executed when the function is called. Here’s an example of a function that takes a users name and prints it with hello: . def greeting(name): print(\"Hello \" + name + \"!\") greeting(\"programmer\") # This is how you call the function (use it) . Output: . Hello programmer! . Functions can also return values using a return statement. Here is an example of a function that adds two numbers togther and returns it: . def add(x, y): return x + y # Call the function and store the result in a variable result = add(3, 5) print(result) . Output: . 8 . Previous: HTML, CS, Javascript Next: Example . ",
+    "url": "/Tutorials/Python#table-of-contents",
+    
+    "relUrl": "/Tutorials/Python#table-of-contents"
+  },"49": {
+    "doc": "Python",
+    "title": "Python",
+    "content": " ",
+    "url": "/Tutorials/Python",
+    
+    "relUrl": "/Tutorials/Python"
+  },"50": {
+    "doc": "RESTful Routes",
+    "title": "What does RESTful mean?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful#what-does-restful-mean",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful#what-does-restful-mean"
+  },"51": {
+    "doc": "RESTful Routes",
+    "title": "Table of contents",
+    "content": ". | The Restaurant Ordering System Analogy 🍽️ | Understanding the Basics of REST 📡 | Principles of RESTful Services 🌐 | . Before we go into what RESTful APIs are, it’s important that we understand that they are just a way for computer sand programs to communicate with one another over the internet. It’s very much similar to how HTTP allows browsers and servers to exchange information. 🌐🖥️ . ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful#table-of-contents"
+  },"52": {
+    "doc": "RESTful Routes",
+    "title": "The Restaurant Ordering System Analogy 🍽️",
+    "content": "Imagine you’re at a restaurant, a familiar setting we’ve discussed before. This time, let’s focus on how you interact with the restaurant’s ordering system, which can help us understand how RESTful APIs work. 📝 . ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful#the-restaurant-ordering-system-analogy-%EF%B8%8F",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful#the-restaurant-ordering-system-analogy-️"
+  },"53": {
+    "doc": "RESTful Routes",
+    "title": "Understanding the Basics of REST 📡",
+    "content": "REST stands for Representational State Transfer. It’s a set of rules that developers follow when they create APIs for web applications. Think of it like the restaurant’s menu and the way you order your food. 📋🍲 . | Menu as the API Documentation: When you sit down at a table, you’re given a menu. This menu lists all the dishes you can order along with descriptions and prices. In RESTful APIs, there’s documentation that tells you what requests you can make to an API, much like how the menu tells you what you can order. 📖🍔 | Order Placement Equals Making a Request: When you decide what to eat, you tell your server what you’d like to order. This is like sending an HTTP request to a web server. You specify what you want, perhaps a “POST” request to create a new order or a “GET” request to just view the menu. 📬➡️🍽️ | Kitchen as the Server: After taking your order, the server (waiter) passes your choice to the kitchen, where your food is prepared. Think of the kitchen as the server in the digital world. It processes your request and prepares the response. 👨‍🍳💻 | Receiving Your Meal as the Response: Once your meal is ready, the server brings it to your table. This is like the response in RESTful APIs, where the server sends back data to your device (the client). The meal can be thought of as the data you requested, delivered in a format you can use. 🍴📲 ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful#understanding-the-basics-of-rest-",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful#understanding-the-basics-of-rest-"
+  },"54": {
+    "doc": "RESTful Routes",
+    "title": "Principles of RESTful Services 🌐",
+    "content": "RESTful APIs operate under a few key principles, similar to how a restaurant functions efficiently: . | Statelessness: Just as the restaurant doesn’t need to remember what every single customer has ordered in the past (each visit is a separate transaction), RESTful APIs don’t store data between requests. Each request from a client contains all the information the server needs to respond. 📄🔄 | Uniform Interface: The way you order food is standardized. You use the menu, and the server knows exactly how to take your order. Similarly, RESTful APIs use standardized HTTP methods (like GET, POST, PUT, DELETE) which define how API interactions are handled. 🔄🗂️ | Client-Server Architecture: Just as the restaurant’s front of house (where you sit) and back of house (the kitchen) have specific roles, RESTful APIs separate concerns between the client (frontend) and the server (backend). This separation allows both sides to evolve independently without affecting the other. 🍴💻 | . Understanding RESTful APIs is like understanding how to efficiently place an order and get exactly what you want at a restaurant. It ensures a smooth, predictable process for both the client (you) and the server (the kitchen), resulting in a satisfying meal—or in the case of web development, the data you need. 🎉👨‍💻 . Previous: Databases Next: Tutorials . ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful#principles-of-restful-services-",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful#principles-of-restful-services-"
+  },"55": {
+    "doc": "RESTful Routes",
+    "title": "RESTful Routes",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/RESTful",
+    
+    "relUrl": "/Web Development Concepts/Backend/RESTful"
+  },"56": {
+    "doc": "Servers",
+    "title": "What are Servers?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/Servers#what-are-servers",
+    
+    "relUrl": "/Web Development Concepts/Backend/Servers#what-are-servers"
+  },"57": {
+    "doc": "Servers",
+    "title": "Table of contents",
+    "content": ". | Understanding Hypertext Transfer Protocol (HTTP) 🖥️ | Servers: The Backbone of a Website 🍽️ | . Before we can dive into what a server technically is, we need to understand how computers communicate with each other. Humans communicate with languages, but computers communicate with each other using what we call the Hypertext Transfer Protocol (HTTP) 📡. ",
+    "url": "/Web%20Development%20Concepts/Backend/Servers#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Backend/Servers#table-of-contents"
+  },"58": {
+    "doc": "Servers",
+    "title": "Understanding Hypertext Transfer Protocol (HTTP) 🖥️",
+    "content": "HTTP is the foundational protocol used by the internet. It defines the rules and standards for transmitting and receiving data over the internet 🌍. Imagine it as the common language that computers use to talk to one another. When you want to visit a webpage, your computer sends an HTTP request to the server where that page lives, asking for the page to be sent to you 📤. The server, understanding your request through HTTP, responds by sending the webpage back to your computer in the form of different files which your browser renders for you 📥. When you enter a restaurant 🍽️, imagine it’s like typing a website address into your browser. In this scenario, you (the customer) are like the browser, or the client, stepping into the restaurant to have a meal. This process is similar to using HTTP on the internet, which is the method your browser uses to communicate your request in a language that the website’s server (think of it as the kitchen where your meal is prepared 🍳) can understand. Once the website’s server receives your letter 📨, it sends back a package containing everything you need to visit the website, such as text, images, and videos. This package is also sent via HTTP, ensuring that your browser can understand and display the website correctly for you 🖥️. ",
+    "url": "/Web%20Development%20Concepts/Backend/Servers#understanding-hypertext-transfer-protocol-http-%EF%B8%8F",
+    
+    "relUrl": "/Web Development Concepts/Backend/Servers#understanding-hypertext-transfer-protocol-http-️"
+  },"59": {
+    "doc": "Servers",
+    "title": "Servers: The Backbone of a Website 🍽️",
+    "content": "Let’s dive a bit deeper into what a server is on the internet, drawing from our restaurant analogy. In a restaurant, your server plays a crucial role: guiding you to your seat, taking your meal order, and delivering your food to you. But remember, they don’t cook the food; that’s the chef’s job 🧑‍🍳. However, in the digital “restaurants” that are the internet, servers operate a bit differently. Imagine you’re craving to view a specific webpage, much like how you’d order a dish at a restaurant 📜. When you type a website’s address into your browser, it’s similar to placing your order. This is where the web server steps in, acting not just as your server but also as the chef 🚀. A web server is essentially a computer program that’s ready to fulfill your order. But instead of heading to the kitchen, it searches its digital shelves for the webpage you’ve requested. Once found, it prepares this “digital dish” by gathering all the necessary files — text, images, videos — and sends them directly to your screen 📲. What sets a web server apart from a restaurant server is its ability to do it all: taking your request, preparing your order, and delivering it to you, all by itself. In this digital dining experience, the server is the multitasking maestro, ensuring you get exactly what you asked for, straight to your device. This makes the web server an all-in-one package — both the server and chef of the internet world, ready to cater to your digital cravings 🌐. Previous: Backend Next: Databases . ",
+    "url": "/Web%20Development%20Concepts/Backend/Servers#servers-the-backbone-of-a-website-%EF%B8%8F",
+    
+    "relUrl": "/Web Development Concepts/Backend/Servers#servers-the-backbone-of-a-website-️"
+  },"60": {
+    "doc": "Servers",
+    "title": "Servers",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Backend/Servers",
+    
+    "relUrl": "/Web Development Concepts/Backend/Servers"
+  },"61": {
+    "doc": "Tutorials",
+    "title": "Tutorials",
+    "content": "Oh no, you found an empty section! . Carry on, happy hacking! . Previous: RESTful Next: Getting Started . ",
+    "url": "/Tutorials",
+    
+    "relUrl": "/Tutorials"
+  },"62": {
+    "doc": "User Experience",
+    "title": "User Experience",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Experience",
+    
+    "relUrl": "/Web Development Concepts/Design/User Experience"
+  },"63": {
+    "doc": "User Experience",
+    "title": "Table of contents",
+    "content": ". | User Experience Principles . | 🖌️ Aesthetic-Usability Effect | 👆 Fitts’s Law | 🚦 Hick’s Law | 🌐 Jakob’s Law | 🧲 Law of Proximity | 🧮 Miller’s Law | ⚖️ Pareto Principle | 🎢 Peak-End Rule | . | . Now that we know how to create good interactions, let’s focus on user experience. ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Experience#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Design/User Experience#table-of-contents"
+  },"64": {
+    "doc": "User Experience",
+    "title": "User Experience Principles",
+    "content": "🖌️ Aesthetic-Usability Effect . This law suggests that designs which are aesthetically pleasing are perceived as easier to use by people. It’s not just about looking good; a well-designed interface can make users more forgiving of minor usability issues. This effect shows the power of first impressions and the importance of visual appeal in user interface design. 👆 Fitts’s Law . This principle focuses on the time required to move to and select a target, such as a button on a screen. The law states that the time is dependent on the distance to the target and its size. Larger targets closer to the user are faster to select, influencing how designers place important buttons and options in an interface to make them easily accessible. 🚦 Hick’s Law . This law highlights the relationship between the number and complexity of choices available and the time it takes for a person to make a decision. As the number of options increases, so does the decision time. This is particularly important in designing menus, settings, and navigation to avoid overwhelming users with too many choices at once. 🌐 Jakob’s Law . This law states that users’ expectations are shaped by their experiences with other websites and applications. If a website functions in a similar manner to others that the user is familiar with, the learning curve is reduced, and the user is more likely to have a positive experience. This underscores the importance of adhering to common design conventions and standards. 🧲 Law of Proximity . According to this principle, objects that are close to each other are perceived as more related than objects that are spaced further apart. Designers use this law to group related information and controls, helping users intuitively understand how different parts of the interface are connected. 🧮 Miller’s Law . This psychological principle suggests that the average person can keep only about 7 (plus or minus 2) items in their short-term memory. This has implications for design, indicating that interfaces should be simple and not overload users with too much information at once. ⚖️ Pareto Principle . Also known as the 80/20 rule, this principle posits that 80% of effects come from 20% of the causes. In UX, this might mean that a small number of features are responsible for the majority of a product’s usefulness or that a small portion of users generate most of the traffic. 🎢 Peak-End Rule . This rule suggests that people judge an experience not by the overall journey but by how they felt at its most intense point (the peak) and at its end. This is crucial for designing experiences that leave a lasting positive impression, even if not every moment was perfect. By Kryillos Samaan . Previous: User Interaction Next: Frontend . ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Experience#user-experience-principles",
+    
+    "relUrl": "/Web Development Concepts/Design/User Experience#user-experience-principles"
+  },"65": {
+    "doc": "User Interaction",
+    "title": "User Interaction",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Interaction",
+    
+    "relUrl": "/Web Development Concepts/Design/User Interaction"
+  },"66": {
+    "doc": "User Interaction",
+    "title": "Table of contents",
+    "content": ". | User Interaction Principes . | 🔍 Adjustable Text Size and Font | 🎨 Use of Colors and Sounds | 🖼 Alternative Text for Images | 🎙 Accessible Controls | ⌨️ Keyboard Navigation | 📝 Closed Captioning and Transcripts | ❗ Error Identification and Suggestions | 👥 Testing with Real Users | . | . With DEI in mind, let’s explore some principles that can help us be more inclusive. ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Interaction#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts/Design/User Interaction#table-of-contents"
+  },"67": {
+    "doc": "User Interaction",
+    "title": "User Interaction Principes",
+    "content": "🔍 Adjustable Text Size and Font . Ensuring content is readable for all, including those with visual impairments, is key to digital accessibility. Adjustable text sizes and fonts allow users to tailor their reading experiences for visual comfort, making digital spaces welcoming to everyone. 🎨 Use of Colors and Sounds . Proper color contrast and sound cues significantly improve usability for users with vision or hearing differences. This ensures that information is accessible and interaction is seamless for everyone. 🖼 Alternative Text for Images . Alternative text for images is vital for users relying on screen readers, allowing them to comprehend visual content they cannot see, thereby making websites and apps more inclusive. 🎙 Accessible Controls . Voice commands and customizable controls ensure that technology is accessible to individuals with diverse physical abilities, offering ways to interact with devices that suit their needs. ⌨️ Keyboard Navigation . Keyboard-only navigation is crucial for individuals who cannot use a mouse, making digital content navigable and inclusive for users with motor impairments. 📝 Closed Captioning and Transcripts . Closed captions and transcripts ensure that deaf or hard of hearing users have access to audio and video content, supporting equality in information access. ❗ Error Identification and Suggestions . Providing intuitive feedback on errors helps users correct mistakes easily, improving the user experience and ensuring successful interactions with digital platforms. 👥 Testing with Real Users . User testing with a diverse group provides insights into accessibility and usability challenges, leading to digital products that are genuinely inclusive. These are the most basic of them all. If you want to explore, you can learn more at Apple’s guideline. Previous: Design Next: User Experience . ",
+    "url": "/Web%20Development%20Concepts/Design/User%20Interaction#user-interaction-principes",
+    
+    "relUrl": "/Web Development Concepts/Design/User Interaction#user-interaction-principes"
+  },"68": {
+    "doc": "Web Development Concepts",
+    "title": "What is Web Development?",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts#what-is-web-development",
+    
+    "relUrl": "/Web Development Concepts#what-is-web-development"
+  },"69": {
+    "doc": "Web Development Concepts",
+    "title": "Table of contents",
+    "content": ". | Internet and Web Development | Components of Web Development . | 🏠 The Design Team | 💻 The Frontend Team | 🔧 The Backend Team | . | . The starter kit goes over the surface level of web development. It is a very high-level perspective and there’s so much more going on under the cover. Take each explanation with a grain of salt as it’s meant to introduce you to these ideas. ",
+    "url": "/Web%20Development%20Concepts#table-of-contents",
+    
+    "relUrl": "/Web Development Concepts#table-of-contents"
+  },"70": {
+    "doc": "Web Development Concepts",
+    "title": "Internet and Web Development",
+    "content": "The Internet is like a huge worldwide network that connects millions of devices together. It’s a bit like a massive library, but instead of books, it stores information, pictures, videos, and much more. You can think of it as a place where people from all over the world can share and access information. Websites are like individual rooms or spaces in this big library. Each website has its own unique address, just like a house has an address in a city. When you visit a website, you’re exploring what’s inside that particular room of the internet library. Websites can be about anything – from sharing news and stories, selling products, teaching things, or simply entertaining people. Now, web development is the fascinating process of building these websites. It’s like being an architect, designer, and storyteller all at once. People who work on web development use special computer languages and tools to create and design these online spaces. ",
+    "url": "/Web%20Development%20Concepts#internet-and-web-development",
+    
+    "relUrl": "/Web Development Concepts#internet-and-web-development"
+  },"71": {
+    "doc": "Web Development Concepts",
+    "title": "Components of Web Development",
+    "content": "Making a website usually consists of several teams, kind of how architects, engineers, and workers come together to build a house. When we create cool websites, there are three main groups involved: . | Design | Frontend | Backend | . Let’s check out what they do! . 🏠 The Design Team . The design team are like the architects who draw the creative blueprints for the house. They focus on how the house will look and feel, deciding on the colors, layout, and style. Similarly, in web development, the design team plans how the website will appear to visitors. They choose the colors, shapes, and where things like buttons and pictures will go, making the website look fantastic! . 💻 The Frontend Team . The frontend team is similar to the construction workers who build the visible parts of the house that people see and interact with—like the walls, doors, and windows. In web development, the frontend team uses special programming languages like HTML, CSS, and JavaScript to create what you see on a website. They make sure the website looks great on your computer or phone, just like how builders make sure the house looks amazing from the outside. 🔧 The Backend Team . Now, the backend team are like the engineers and the house’s hidden systems—things you might not see, like the electricity and plumbing. In web development, the backend team works on the website’s power system, the databases, and other technical stuff. They make sure everything works smoothly behind the scenes, so when you click a button, the right information shows up, just like when you turn on a light switch, the light comes on without you seeing all the wiring. Back to Home Next: Design . ",
+    "url": "/Web%20Development%20Concepts#components-of-web-development",
+    
+    "relUrl": "/Web Development Concepts#components-of-web-development"
+  },"72": {
+    "doc": "Web Development Concepts",
+    "title": "Web Development Concepts",
+    "content": " ",
+    "url": "/Web%20Development%20Concepts",
+    
+    "relUrl": "/Web Development Concepts"
+  },"73": {
+    "doc": "The Team",
+    "title": "The Team",
+    "content": "Previous: Backend . ",
+    "url": "/team",
+    
+    "relUrl": "/team"
+  }
+}
