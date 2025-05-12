@@ -40,9 +40,6 @@ jobs:
       - name: Force Install JtD
         run: gem install just-the-docs -v 0.8.2
         
-      - name: Clean Jekyll Cache
-        run: bundle exec jekyll clean
-        
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
