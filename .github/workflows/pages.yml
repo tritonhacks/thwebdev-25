@@ -8,7 +8,7 @@ name: Deploy Jekyll site to Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["kevin/deployment"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -33,11 +33,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Bundler Upgrade
+        run: gem install bundler -v '2.3.26'
       - name: Install dependencies
         run: |
           gem install bundler
           bundle config set --local path 'vendor/bundle'
           bundle install
+      - name: Force Install
+        run: gem install just-the-docs -v 0.10.1
+      - name: Clean Jekyll Cache
+        run: bundle exec jekyll clean
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
