@@ -1,7 +1,7 @@
 ---
 layout: default
 title: HTML, CSS, and Javascript
-nav_order: 2
+nav_order: 3
 permalink: Tutorials/HTML_CSS_JS
 parent: Tutorials
 has_toc: true
@@ -263,6 +263,6 @@ document.getElementById('welcome').textContent = 'Welcome to our website!';
 
 _______________________________________________________________
 
-[Previous: Getting Started](Getting Started){: .float-left .v-align-text-top}
+[Previous: Figma](Figma){: .float-left .v-align-text-top}
 [Next: Python](Python){: .float-right .v-align-text-top}
 
