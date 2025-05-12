@@ -33,19 +33,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Bundler Upgrade
-        run: gem install bundler -v '2.3.26'
+        
+      - name: Install Bundler 2.5.14
+        run: gem install bundler -v '2.5.14'
+        
+      - name: Force Install JtD
+        run: gem install just-the-docs -v 0.8.2
+        
       - name: Install dependencies
         run: |
             bundle config set --local path 'vendor/bundle'
             bundle install --jobs 4 --retry 3
-      - name: Force Install
-        run: gem install just-the-docs -v 0.10.1
+      - name: super user privileges yolo
+        run: sudo chmod -R 777 vendor
+        
       - name: Clean Jekyll Cache
         run: bundle exec jekyll clean
+        
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4
+        
       - name: Build with Jekyll
         run: |
           bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --verbose
