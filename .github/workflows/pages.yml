@@ -39,13 +39,14 @@ jobs:
         
       - name: Force Install JtD
         run: gem install just-the-docs -v 0.8.2
+
+      - name: super user privileges yolo
+        run: sudo chmod -R 777 vendor
         
       - name: Install dependencies
         run: |
             bundle config set --local path 'vendor/bundle'
             bundle install --jobs 4 --retry 3
-      - name: super user privileges yolo
-        run: sudo chmod -R 777 vendor
         
       - name: Clean Jekyll Cache
         run: bundle exec jekyll clean
