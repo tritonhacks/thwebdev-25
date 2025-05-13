@@ -56,4 +56,4 @@ Once these are installed, you are all set up to start creating your website.
 There is an extension on visual studio code that allows you to code in real-time with your team members. In order to do so, follow [this](https://learn.microsoft.com/en-us/visualstudio/liveshare/quickstart/share) tutorial.
 
 [Previous: Tutorials](../Tutorials){: .float-left .v-align-text-top}
-[Next: Figma](Figma){: .float-right .v-align-text-top}
+[Next: HTML](HTML){: .float-right .v-align-text-top}

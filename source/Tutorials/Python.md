@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Python
-nav_order: 3
+nav_order: 5
 permalink: Tutorials/Python
 parent: Tutorials
 has_toc: false
@@ -680,5 +680,5 @@ Output:
 8
 ```
 
-[Previous: HTML, CS, Javascript](HTML_CSS_JS){: .float-left .v-align-text-top}
-[Next: Backend](Backend){: .float-right .v-align-text-top}
+[Previous: Javascript](JS){: .float-left .v-align-text-top}
+[Next: Example](../Example){: .float-right .v-align-text-top}
