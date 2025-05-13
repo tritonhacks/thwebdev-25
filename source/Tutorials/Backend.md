@@ -248,3 +248,7 @@ Here's a breakdown of what happens:
 5. Your app uses that token to call Google APIs (like "get user's email").
 
 If interested, you can learn more at <https://support.google.com/googleapi/answer/6158849?hl=en>
+
+[Previous: Python](Python){: .float-left .v-align-text-top}
+[Next: Example](../Example){: .float-right .v-align-text-top}
+
