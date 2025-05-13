@@ -74,7 +74,7 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     rexml (3.4.0)
-    rouge (4.5.1)
+    rouge (4.5.2)
     safe_yaml (1.0.5)
     sass-embedded (1.83.4-arm64-darwin)
       google-protobuf (~> 4.29)
@@ -88,7 +88,6 @@ GEM
 PLATFORMS
   arm64-darwin
   x86_64-linux-gnu
-
 
 DEPENDENCIES
   jekyll (~> 4.4.1)
