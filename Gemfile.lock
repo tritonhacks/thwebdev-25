@@ -89,6 +89,7 @@ PLATFORMS
   arm64-darwin
   x86_64-linux-gnu
 
+
 DEPENDENCIES
   jekyll (~> 4.4.1)
   just-the-docs (= 0.10.1)
